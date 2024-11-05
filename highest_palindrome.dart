@@ -1,6 +1,10 @@
 void main() {
   print(findHighestPalindrome('3643', 1));
   print(findHighestPalindrome('972239', 2));
+  print(findHighestPalindrome('1224', 1));
+  print(findHighestPalindrome('175231', 2));
+  print(findHighestPalindrome('123321', 2));
+  print(findHighestPalindrome('1532462381', 4));
 }
 
 String findHighestPalindrome(String s, int k) {
@@ -36,24 +40,34 @@ String _findHighestPalindromeHelper(List<String> digits, int k) {
   }
 
   if (k > 0) {
-    for (int i = 0; i < len ~/ 2; i++) {
+    for (int i = 0; i < len ~/ 2 && k > 0; i++) {
       int j = len - 1 - i;
 
-      if (k >= 2 && digits[i] != '9') {
-        digits[i] = '9';
-        digits[j] = '9';
-        k -= 2;
-      } else if (k >= 1 && digits[i] == digits[j] && digits[i] != '9') {
-        digits[i] = '9';
-        digits[j] = '9';
-        k--;
+      if (digits[i] == digits[j]) {
+        int currentDigit = int.parse(digits[i]);
+        for (int d = currentDigit + 1; d <= 9 && k >= 2; d++) {
+          digits[i] = d.toString();
+          digits[j] = d.toString();
+          k -= 2;
+        }
+      } else if (k >= 1) {
+        int leftDigit = int.parse(digits[i]);
+        int rightDigit = int.parse(digits[j]);
+        int startDigit = leftDigit > rightDigit ? leftDigit : rightDigit;
+        for (int d = startDigit + 1; d <= 9 && k >= 1; d++) {
+          digits[i] = d.toString();
+          digits[j] = d.toString();
+          k--;
+        }
       }
-
-      if (k == 0) break;
     }
 
-    if (k > 0 && len % 2 == 1 && digits[len ~/ 2] != '9') {
-      digits[len ~/ 2] = '9';
+    if (k > 0 && len % 2 == 1) {
+      int middleDigit = int.parse(digits[len ~/ 2]);
+      for (int d = middleDigit + 1; d <= 9 && k > 0; d++) {
+        digits[len ~/ 2] = d.toString();
+        k--;
+      }
     }
   }
 
